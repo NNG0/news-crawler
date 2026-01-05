@@ -1,0 +1,6 @@
+services:
+  news-crawler:
+    image: news-crawler
+    build:
+      context: .
+      dockerfile: Dockerfile
