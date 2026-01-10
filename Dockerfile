@@ -1,4 +1,4 @@
-FROM python:3.13
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -11,4 +11,4 @@ RUN uv pip install --system --no-cache-dir -r requirements.txt
 
 COPY app .
 
-CMD ["python", "main.py", "parse_feed"]
+CMD ["python", "main.py", "parse_feed", "ner"]

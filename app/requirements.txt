@@ -1,1 +1,4 @@
-feedparser
+feedparser>=6.0.0
+spacy>=3.7.0,<4.0.0
+requests>=2.31.0
+tqdm>=4.66.0
