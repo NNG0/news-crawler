@@ -1,19 +1,51 @@
 import feedparser
-
-
 import json
 import logging
 import os
+import re
 from pathlib import Path
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from typing import List, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from html import unescape
 import requests
 from tqdm import tqdm
 
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0"
+
+
+def strip_html_tags(text: str) -> str:
+    """
+    Earlier iteration did not get rid of all html tags and so they were being detected as entities. 
+    
+    Args:
+        text: Raw text that may contain HTML
+    
+    Returns:
+        Cleaned plain text
+    """
+    if not text:
+        return ""
+    
+    # Unescape HTML entities like &nbsp;, &amp;, etc.
+    text = unescape(text)
+    
+    # Remove HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    
+    # Remove remaining HTML entities
+    text = re.sub(r'&\w+;', ' ', text)
+    
+    # Remove style and script content
+    text = re.sub(r'style\s*=\s*["\'][^"\']*["\']', '', text)
+    text = re.sub(r'class\s*=\s*["\'][^"\']*["\']', '', text)
+    
+    # Clean up excessive whitespace
+    text = re.sub(r'\s+', ' ', text)
+    
+    return text.strip()
 
 
 @dataclass
@@ -56,12 +88,13 @@ class Feed:
 class FeedReader:
     """RSS/Atom feed reader with concurrent fetching"""
 
-    def __init__(self, feeds_file: str, verbose: bool = False):
+    def __init__(self, feeds_file: str, verbose: bool = False, output_dir: Optional[str] = None):
         self.sources: List[str] = []
         self.feeds: List[Feed] = []
         self.failed_feeds: List[str] = []
         self.day: Optional[datetime] = None
         self.verbose = verbose
+        self.output_dir = Path(output_dir) if output_dir else Path.cwd()
         self._load_sources(feeds_file)
 
     def _load_sources(self, feeds_file: str) -> None:
@@ -177,10 +210,14 @@ class FeedReader:
                     content = entry.content[0].value
                 elif hasattr(entry, 'summary'):
                     content = entry.summary
+                
+                # Clean HTML from content and title
+                content = strip_html_tags(content)
+                title = strip_html_tags(entry.get('title', ''))
 
                 # Create feed item
                 item = FeedItem(
-                    title=entry.get('title', ''),
+                    title=title,
                     content=content,
                     url=entry.get('link', ''),
                     published=published,
@@ -201,20 +238,50 @@ class FeedReader:
                 logging.error(f"Error fetching {url}: {e}")
             return None
 
+    def save_to_json(self, filename: str = "feeds_output.json") -> Path:
+        """Save feeds to JSON file and return the file path"""
+        output = {
+            'feeds': [feed.to_dict() for feed in self.feeds],
+            'failed_feeds': self.failed_feeds,
+            'timestamp': datetime.now().isoformat(),
+            'total_feeds': len(self.feeds),
+            'total_items': sum(len(feed.items) for feed in self.feeds)
+        }
+        
+        output_path = self.output_dir / filename
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(output, f, indent=2, ensure_ascii=False)
+        
+        if self.verbose:
+            logging.info(f"Saved output to: {output_path.absolute()}")
+        
+        return output_path.absolute()
 
+
+# Example usage
 if __name__ == "__main__":
-   
-    reader = FeedReader("news-crawler/app/data/feeds_de.txt", verbose=True)
+    logging.basicConfig(level=logging.INFO)
+    
+    # Create feed reader with output directory
+    reader = FeedReader(
+        "news-crawler/app/data/feeds_de.txt",
+        verbose=True,
+        output_dir="news-crawler/app/data"
+    )
+    
+    # Set day filter (optional)
     reader.day = datetime.now()
+    
+    # Fetch feeds concurrently
     reader.fetch()
     
+    # Print results
     print(f"\nSuccessfully fetched: {len(reader.feeds)} feeds")
     print(f"Failed feeds: {len(reader.failed_feeds)}")
+    print(f"Total items: {sum(len(feed.items) for feed in reader.feeds)}")
     
-    output = {
-        'feeds': [feed.to_dict() for feed in reader.feeds],
-        'failed_feeds': reader.failed_feeds
-    }
-    
-    with open('news-crawler/app/data/feeds_output.json', 'w') as f:
-        json.dump(output, f, indent=2)
+    # Save to JSON and get the path
+    output_path = reader.save_to_json("feeds_output.json")
+    print(f"Output saved to: {output_path}")
