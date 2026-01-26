@@ -6,6 +6,13 @@ This project is crawling, extracting, indexing and processing the content of dai
 sudo docker compose up --build
 ```
 
+## NoDCore integration (like Go crawler)
+Run from `news-crawler/` so `${PWD}` volume mounts resolve correctly:
+```bash
+docker compose -f docker-compose.nod.yml up --build
+```
+The crawler writes daily corpora to `news-crawler/out/nod/german/YYYYMMDD.bz2`, and `nodcore` reads the same folder via a bind mount.
+
 ## todo-list
 - [ ] analyze current crawler
     - [ ] list of features

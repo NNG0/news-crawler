@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import json
 import re
 import bz2
 from dataclasses import dataclass
 from datetime import datetime, date
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Literal
+import socket
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from html import unescape
 
@@ -14,6 +15,8 @@ import feedparser
 
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0"
+
+ContentSource = Literal["article", "feed"]
 
 
 def strip_html_tags(text: str) -> str:
@@ -29,6 +32,60 @@ def strip_html_tags(text: str) -> str:
     text = re.sub(r'\s+', ' ', text)
     
     return text.strip()
+
+_DROP_TAGS_RE = re.compile(
+    r"(?is)<(script|style|noscript|svg|form|footer|nav|header|aside)[^>]*>.*?</\1>"
+)
+
+
+def extract_article_text(html: str) -> str:
+    """
+    Heuristic extraction of main article text from HTML.
+
+    This aims to approximate the Go crawler's GoOse cleaned text without extra
+    dependencies (readability, bs4, etc.).
+    """
+    if not html:
+        return ""
+
+    html = _DROP_TAGS_RE.sub(" ", html)
+
+    def _best_container(tag: str) -> str:
+        matches = re.findall(rf"(?is)<{tag}\b[^>]*>(.*?)</{tag}>", html)
+        if not matches:
+            return ""
+        best = ""
+        best_len = 0
+        for m in matches:
+            cleaned = strip_html_tags(m)
+            cleaned_len = len(cleaned)
+            if cleaned_len > best_len:
+                best_len = cleaned_len
+                best = cleaned
+        return best
+
+    # Prefer semantic containers if present
+    article = _best_container("article")
+    if article:
+        return article.strip()
+
+    main = _best_container("main")
+    if main:
+        return main.strip()
+
+    # Otherwise, join paragraph text (common across news sites)
+    paragraphs = re.findall(r"(?is)<p\b[^>]*>(.*?)</p>", html)
+    parts = []
+    for p in paragraphs:
+        t = strip_html_tags(p)
+        if len(t.split()) < 4:
+            continue
+        parts.append(t)
+
+    if parts:
+        return "\n".join(parts).strip()
+
+    return strip_html_tags(html).strip()
 
 
 def split_into_sentences(text: str) -> List[str]:
@@ -92,11 +149,19 @@ def _fetch_bytes(url: str, *, timeout_s: int = 20) -> bytes:
     with urlopen(req, timeout=timeout_s) as resp:
         return resp.read()
 
+def _fetch_text(url: str, *, timeout_s: int = 60) -> str:
+    req = Request(url, headers={"User-Agent": USER_AGENT})
+    with urlopen(req, timeout=timeout_s) as resp:
+        raw = resp.read()
+        charset = getattr(resp.headers, "get_content_charset", lambda: None)() or "utf-8"
+        return raw.decode(charset, errors="replace")
+
 
 def parse_feeds_to_sentences(
     feeds_file: str | Path = "data/feeds_de.txt",
     *,
     day: Optional[datetime] = None,
+    content_source: ContentSource = "article",
     verbose: bool = False,
 ) -> Tuple[List[SentenceRecord], List[str]]:
     """
@@ -105,6 +170,7 @@ def parse_feeds_to_sentences(
     Args:
         feeds_file: Path to file with feed URLs (one per line)
         day: Only keep items published on this day (optional)
+        content_source: Extract from article HTML ("article") or feed summary/content ("feed")
         verbose: Print progress information
     
     Returns:
@@ -118,6 +184,8 @@ def parse_feeds_to_sentences(
     target_date = day.date() if day else None
     sentences: List[SentenceRecord] = []
     failed: List[str] = []
+    feed_failures = 0
+    article_failures = 0
     
     for i, url in enumerate(sources, 1):
         if verbose and i % 10 == 0:
@@ -151,54 +219,54 @@ def parse_feeds_to_sentences(
                     continue
                 
                 article_date = published.date()
-                
-                # Extract and clean title
-                title = str(getattr(entry, "title", "") or "")
-                title = strip_html_tags(title)
-                
-                # Extract and clean content
+
                 content = ""
-                content_obj = getattr(entry, "content", None)
-                if content_obj:
+                if content_source == "article":
                     try:
-                        content = content_obj[0].value
-                    except Exception:
-                        content = ""
-                if not content:
-                    content = str(getattr(entry, "summary", "") or "")
-                
-                content = strip_html_tags(content)
-                
-                # Split title into sentences
-                if title:
-                    for sent in split_into_sentences(title):
-                        normalized = normalize_sentence(sent)
-                        if should_keep(normalized):
-                            sentences.append(SentenceRecord(
-                                text=normalized,
-                                url=article_url,
-                                day=article_date
-                            ))
-                
-                # Split content into sentences
-                if content:
-                    for sent in split_into_sentences(content):
-                        normalized = normalize_sentence(sent)
-                        if should_keep(normalized):
-                            sentences.append(SentenceRecord(
-                                text=normalized,
-                                url=article_url,
-                                day=article_date
-                            ))
+                        html = _fetch_text(article_url)
+                        content = extract_article_text(html)
+                    except (HTTPError, URLError, TimeoutError, socket.timeout) as e:
+                        failed.append(f"article_fetch\t{article_url}\t{e}")
+                        article_failures += 1
+                        continue
+                    except Exception as e:
+                        failed.append(f"article_fetch\t{article_url}\t{e}")
+                        article_failures += 1
+                        continue
+
+                    if not content:
+                        failed.append(f"article_extract\t{article_url}\tempty")
+                        article_failures += 1
+                        continue
+                else:
+                    # Fall back to the feed-provided summary/content
+                    content_obj = getattr(entry, "content", None)
+                    if content_obj:
+                        try:
+                            content = content_obj[0].value
+                        except Exception:
+                            content = ""
+                    if not content:
+                        content = str(getattr(entry, "summary", "") or "")
+                    content = strip_html_tags(content)
+
+                for sent in split_into_sentences(content):
+                    normalized = normalize_sentence(sent)
+                    if should_keep(normalized):
+                        sentences.append(
+                            SentenceRecord(text=normalized, url=article_url, day=article_date)
+                        )
         
         except Exception as e:
             if verbose:
                 print(f"Failed to fetch {url}: {e}")
-            failed.append(url)
+            failed.append(f"feed_fetch\t{url}\t{e}")
+            feed_failures += 1
     
     if verbose:
-        print(f"\nExtracted {len(sentences)} sentences from {len(sources) - len(failed)} feeds")
-        print(f"Failed feeds: {len(failed)}")
+        ok_feeds = max(0, len(sources) - feed_failures)
+        print(f"\nExtracted {len(sentences)} sentences from {ok_feeds} feeds")
+        print(f"Failures: {len(failed)} (feeds: {feed_failures}, articles: {article_failures})")
     
     return sentences, failed
 
@@ -241,10 +309,14 @@ def write_nod_corpus(
         filename = day.strftime("%Y%m%d") + ".bz2"
         out_path = out_dir / filename
         
-        with bz2.open(out_path, "wt", encoding="utf-8") as f:
+        with bz2.open(out_path, "wt", encoding="utf-8", compresslevel=2) as f:
             for rec in records:
-                # Format: text\turl\n
-                f.write(f"{rec.text}\t{rec.url}\n")
+                # Match Go NoD exporter: collapse whitespace, filter length, replace pipes.
+                text = " ".join(rec.text.split())
+                if len(text) < 20 or len(text) > 256:
+                    continue
+                text = text.replace("|", " ")
+                f.write(f"{text}\t{rec.url}\n")
         
         created_files.append(out_path)
         
@@ -277,6 +349,7 @@ def parse_and_export(
     lang: str = "de",
     out_root: str | Path = "out/nod",
     day: Optional[datetime] = None,
+    content_source: ContentSource = "article",
     verbose: bool = False,
 ) -> List[Path]:
     """
@@ -296,6 +369,7 @@ def parse_and_export(
     sentences, failed = parse_feeds_to_sentences(
         feeds_file=feeds_file,
         day=day,
+        content_source=content_source,
         verbose=verbose
     )
     
@@ -311,7 +385,7 @@ def parse_and_export(
     if failed:
         store_failures(failed, lang, Path(out_root))
         if verbose:
-            print(f"\nLogged {len(failed)} failed feeds to failures.log")
+            print(f"\nLogged {len(failed)} failures to failures.log")
     
     return created_files
 
