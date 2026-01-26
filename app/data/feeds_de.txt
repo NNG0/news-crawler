@@ -102,8 +102,6 @@ https://www.neues-deutschland.de/rss/aktuell.php
 
 https://rss.golem.de/rss.php?feed=ATOM1.0
 https://www.heise.de/rss/heise-atom.xml
-https://www.abendblatt.de/feed/rss/hamburg.rss
-https://www.morgenpost.de/feeds/rss/berlin.rss
 https://www.n-tv.de/rss
 https://www.spiegel.de/schlagzeilen/index.rss
 https://www.faz.net/rss/aktuell/
@@ -112,23 +110,18 @@ https://rss.dw.com/xml/rss-de-all
 https://www.tagesschau.de/xml/rss2/
 https://www.spiegel.de/international/index.rss
 http://newsfeed.zeit.de/index
-https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=4634615&q=site:https%3A%2F%2Ffeeds.thelocal.com%2Frss%2Fde
 https://taz.de/!p4608;rss/
 https://www.handelsblatt.com/contentexport/feed/top-themen
-https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5481713&q=site:https%3A%2F%2Fwww.op-marburg.de%2Farc%2Foutboundfeeds%2Frss%2F
 https://www.nd-aktuell.de/rss/aktuell.php
 https://www.ostsee-zeitung.de/arc/outboundfeeds/rss/
 https://www.abendzeitung-muenchen.de/storage/rss/rss/alle-artikel-abendzeitung.xml
 https://www.kn-online.de/arc/outboundfeeds/rss/
 https://jungefreiheit.de/feed/
-https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5481696&q=site:https%3A%2F%2Ffeed.ksta.de%2Ffeed%2Frss%2Findex.rss
 https://stuttgart-journal.de/tp3/feed/
 https://www.ruhrnachrichten.de/feed/
 https://www.stern.de/feed/standard/alle-nachrichten/
-https://www.freiepresse.de/rss/rss_chemnitz.php
-https://www.freiepresse.de/rss/
 https://rp-online.de/feed.rss
 https://www.haz.de/arc/outboundfeeds/rss/
 https://www.germanbrief.com/blog-feed.xml
-https://www.mainpost.de/storage/rss/rss/topnews.xml
-https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=7327090&q=site:
+https://feeds.thelocal.com/rss/de
+https://www.jungewelt.de/feeds/newsticker.rss
