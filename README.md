@@ -60,18 +60,3 @@ docker compose -f docker-compose.nod.yml run --rm crawler \
 Start the full stack via `docker compose -f docker-compose.nod.yml up --build` (see “Start NoD stack” above).
 The crawler writes daily corpora to `news-crawler/out/nod/german/YYYYMMDD.bz2`, and `nodcore` reads the same folder via a bind mount.
 
-## architecture
-
-[News Sources]
-      ↓
-[Python Crawler]
-      ↓
-[Article Text Extraction]
-      ↓
-[NLP: NER + Relation Extraction]
-      ↓
-[Entity Normalization]
-      ↓
-[Export in Existing Format]
-      ↓
-[Visualizer]
