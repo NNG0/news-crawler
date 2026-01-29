@@ -1,0 +1,120 @@
+Feed Cull Log - 2026-01-23T15:43:31.195996
+============================================================
+
+Feeds file: C:\Users\david\Desktop\NLP\projekt\news-crawler\app\data\feeds_de.txt
+Failures file: C:\Users\david\Desktop\NLP\projekt\news-crawler\app\out\nod\de\failures.log
+
+Original feed count: 235
+Removed [not working]: 99
+Removed [duplicate]: 3
+Total removed: 102
+Remaining: 133
+Removal rate: 43.4%
+
+Removed URLs (Not Working):
+------------------------------------------------------------
+https://amerika21.de/feed
+http://blogtainment.de/feed/
+https://de.sputniknews.com/export/rss2/archive/index.xml
+http://rotefahne.eu/feed/
+http://diepresse.com/rss//home
+http://flatworld.welt.de/feed/
+http://freie.welt.de/feed/moviepilot.de
+http://www.gea.de/rss
+http://www.berliner-zeitung.de/blueprint/servlet/xml/berliner-zeitung/23701214-asYahooFeed.xml
+http://www.ksta.de/blueprint/servlet/xml/ksta/23698894-asYahooFeed.xml
+http://www.mz-web.de/feed/yahoo.rss
+https://www.pz-news.de/feed/15-wirtschaft-lokal.xml https://www.pz-news.de/feed/11-region.xml
+http://www.rundschau-online.de/blueprint/servlet/xml/rundschau-online/23686370-asYahooFeed.xml
+http://www.lvz.de/rss/feed/lvz_nachrichten
+http://www.sueddeutsche.de/news/rss
+http://www.business-on.de/newsfeeds/5_all.xml
+http://www.apa.at/Site/RSS.xml
+https://web.de/feeds/rss/index.rss
+http://api.20min.ch/rss/view/1
+http://www.aerztezeitung.de/extras/rss/
+http://www.aktuell.ru/rss/russland_news.rss.xml
+http://www.allgemeine-zeitung.de/index.rss
+http://www.aachener-nachrichten.de/cmlink/euregio-rss-1.357285
+http://www.aachener-nachrichten.de/cmlink/politik-rss-1.359727
+http://www.aachener-nachrichten.de/cmlink/aktuell-rss-1.366716
+http://boerse.ard.de/index~rss.xml
+https://krautreporter.de/rss.rss
+https://www.bo.de/newsfeed.xml
+http://www.be24.at/rss
+http://www.berlinkontor.de/feed
+http://www.bild.de/rssfeeds/vw-alles/vw-alles-26970192,sort=1,view=rss2.bild.xml
+https://www.blick.ch/news/rss
+http://www.boerse-express.com/cat/newsflow/rss
+http://www.boerse-online.de/rss
+http://www.borkenerzeitung.de/feed/14-nachrichten.xml http://www.borkenerzeitung.de/feed/13-sport-gesamt.xml
+https://www.br.de/nachrichten/aktuell-100~rss.xml https://www.br.de/themen/sport/sport100~rss.xml
+https://buergerstimme.com/Design2/feed/
+https://www.bundesregierung.de/SiteGlobals/Functions/RSSFeed/DE/RSSNewsfeed/RSS_Breg_aktuell/RSSNewsfeed.xml
+http://www.bz-berlin.de/feed
+https://www.channelpartner.de/feed/all
+https://www.cio.de/feed/at/1
+https://www.computerwoche.de/feed/all
+http://www.computerworld.ch/rss/news.xml
+http://www.crn.de/rss/
+http://www.derboersianer.com/feed/
+http://www.deutsch-tuerkische-nachrichten.de/feed/customfeed/
+http://www.deutsche-mittelstands-nachrichten.de/feed/customfeed/
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=1
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=100
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=101
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=102
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=103
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=104
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=105
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=106
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=108
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=109
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=110
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=111
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=115
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=116
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=2
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=3
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=6
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=79
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=83
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=85
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=86
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=87
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=88
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=89
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=90
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=91
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=92
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=93
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=94
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=95
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=96
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=97
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=98
+http://www.moz.de/nc/service/weiteres/rss-feeds-auf-mozde/?type=578&tx_rsmretrescorss_pi1%5Bshow%5D=99
+http://rss.focus.de/fol/XML/rss_folnews.xml
+http://www.pnn.de/rss.xml
+http://rss.kicker.de/news/aktuell
+https://www.loomee-tv.de/feed
+http://www.sport1.de/news.rss
+https://www.vn.at/feed
+http://www.neuepresse.de/rss/feed/np_schlagzeilen
+http://www.salzburg24.at/rss
+http://www.radioberg.de/inc/rss/sport.rss
+http://www.radioberg.de/inc/rss/lokales.rss
+https://www.nnn.de/rss
+http://www.wienerzeitung.at/_export/rss/nachrichten/schlagzeilen/index.rss
+https://deutsch.rt.com/feeds/news
+http://www.pnp.de/_export/rss/nachrichten/wirtschaft/index.rss
+https://www.kevelaerer-blatt.de/feed
+https://www.meinbezirk.at/feed/action/mode/realm/ID/0
+https://www.esslinger-zeitung.de/feed/27-startseite-teaser-feed.xml
+https://www.extremnews.com/feed
+
+Removed URLs (Duplicates):
+------------------------------------------------------------
+http://www.t-online.de/themen/rss/
+https://www.handelsblatt.com/contentexport/feed/schlagzeilen
+https://rss.sueddeutsche.de/rss/Topthemen

@@ -1,0 +1,72 @@
+version: '2.1'
+
+networks:
+  nod-newscrawler:
+
+services:
+  crawler:
+    build: .
+    restart: on-failure
+    networks:
+      nod-newscrawler:
+    volumes:
+      - ${PWD}/out:/app/out
+    command:
+      [
+        "python",
+        "main.py",
+        "scrape",
+        "--feeds-file",
+        "data/feeds_de.txt",
+        "--lang",
+        "german",
+        "--out-dir",
+        "out/nod",
+        "--day",
+        "yesterday",
+        "--content-source",
+        "article"
+      ]
+
+  nodcore:
+    image: uhhlt/nodcore
+    volumes:
+      - ${PWD}/out/nod/german:/app/content
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      nod-newscrawler:
+
+  nodweb:
+    image: uhhlt/nodweb
+    restart: always
+    ports:
+      - 10008:9000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      nod-newscrawler:
+
+  db:
+    image: mariadb
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=nodcore
+      - MYSQL_USER=nod
+      - MYSQL_PORT=3306
+      - MYSQL_PASSWORD=nod
+    volumes:
+      - db_data:/var/lib/mysql
+    command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-pnod", "-unod"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+    networks:
+      nod-newscrawler:
+
+volumes:
+  db_data:
